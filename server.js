@@ -19,7 +19,7 @@ var corsOptions = {
 
 // The editor interface.
 app.get('/editor', function(req, res) {
-  res.sendFile(__dirname + '/editor.html');
+  res.sendFile(__dirname + '/views/editor.html');
 });
 
 // The in-email representation.

@@ -1,6 +1,6 @@
-# Giphy Mixmax Enhancement
+# Recorder Mixmax Enhancement
 
-This is an open source Mixmax Enhancement. See <http://developer.mixmax.com/docs/overview-enhancement#tutorial-building-giphy-enhancement> for more information about how to use this example code in Mixmax.
+This is an open source Mixmax Enhancement for recording and sending audio. Based on the original [Giphy Mixmax Enhancement](https://github.com/mixmaxhq/giphy-mixmax-app).
 
 ## Running locally
 
