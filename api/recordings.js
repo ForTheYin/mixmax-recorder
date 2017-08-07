@@ -1,15 +1,19 @@
-const uuidv4 = require('uuid/v4');
-const express = require('express');
 const multer = require('multer');
+const uuidv4 = require('uuid/v4');
 
 const upload = multer();
-const router = express.Router();
+const router = require('express').Router();
 const persistence = require('../persistence');
 
+
 router.post('/', upload.single('file'), (req, res, next) => {
+  // Create a random UUID to link to the audio file
   const uploadId = uuidv4();
+
+  // TODO: Sanitize inputs and ensure that nothing malicious is uploaded
   const file = req.file;
 
+  // Inserts the file with tag using the current persistence strategy
   persistence.insert(uploadId, file, () => {
     res.json({ uploadId });
   });
@@ -18,17 +22,21 @@ router.post('/', upload.single('file'), (req, res, next) => {
 router.get('/:uploadId', (req, res, next) => {
   const uploadId = req.params.uploadId;
   if (!uploadId) {
-    return res.status(400).send('Invalid params');
+    // Terminate if the uploadId is not found
+    return res.status(400).send('A valid recording id is needed');
   }
 
+  // Finds the file with tag using the current persistence strategy
   persistence.find(uploadId, (result) => {
-    if (result && result.length > 0) {
-      const data = result[0].file;
+    if (result) {
+      const file = result.file;
+
+      // Write the audio file information directly from the saved data
       res.writeHead(200, {
-        'Content-Type': data.mimetype,
-        'Content-Length': data.size
+        'Content-Type': file.mimetype,
+        'Content-Length': file.size
       });
-      res.end(data.buffer);
+      res.end(file.buffer);
     } else {
       res.status(404).send('File not found');
     }

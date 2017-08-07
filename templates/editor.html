@@ -3,138 +3,19 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <title>Recorder</title>
+    <title>Audio Recorder</title>
 
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto">
-    <link rel="stylesheet" href="/nprogress.css">
-    <link rel="stylesheet" href="/styles.css">
-
-    <style>
-    body {
-      margin: 0;
-      font-size: 16px;
-      font-family: 'Roboto', sans-serif;
-    }
-
-    p {
-      margin-bottom: 1.5rem;
-    }
-
-    header {
-      color: #ffffff;
-      background: #3c7de6;
-      text-align: center;
-      font-size: 1.5rem;
-      font-weight: 500;
-      line-height: 3rem;
-      width: 100%;
-      height: 3rem;
-    }
-
-    footer {
-      position: fixed;
-      bottom: 0;
-
-      color: #222222;
-      background: #f9f9fa;
-      text-align: center;
-      line-height: 3rem;
-      width: 100%;
-      height: 3rem;
-    }
-
-    .recorder, .support {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .record-button {
-      padding: 1.5rem 2.25rem;
-      border-radius: 5rem 5rem;
-
-      color: #8f8f8f;
-      background-color: #eeeeee;
-      transition: all 150ms ease-in-out;
-    }
-
-    .record-button:hover {
-      cursor: pointer;
-      color: #fefefe;
-      background-color: #f15252;
-      transition: all 150ms ease-in-out;
-    }
-
-    .record-button.recording {
-      color: #fefefe;
-      background-color: #da2a2a;
-    }
-
-    .record-download > i {
-      float: right;
-      color: #8f8f8f;
-      line-height: 3rem;
-      padding-right: 1.5rem;
-      transition: all 150ms ease-in-out;
-    }
-
-    .record-download > i:hover {
-      color: #4f4f4f;
-      transition: all 150ms ease-in-out;
-    }
-
-    .btn {
-      float: left;
-      display: inline-block;
-
-      font-size: 0.8125rem;
-      text-align: center;
-      cursor: pointer;
-      padding: 0 1rem;
-      margin: 0.5rem 0;
-      background-color: #fff;
-      line-height: 2rem;
-      height: 2rem;
-
-      position: relative;
-      transition: all 150ms ease-in-out;
-      border: 1px solid #dfdfdf;
-      border-radius: 3px;
-    }
-
-    .btn.insert {
-      margin-left: 0.5rem;
-      color: #ffffff;
-      background-color: #3c7de6;
-      transition: all 150ms ease-in-out;
-    }
-    .btn.insert:hover {
-      background-color: #2569d6;
-    }
-
-    .btn.cancel {
-      margin-left: 0.5rem;
-    }
-
-    .btn.cancel:hover {
-      background-color: #efefef;
-    }
-
-    .hidden {
-      display: none;
-      transition: all 150ms ease-in-out;
-    }
-    </style>
-
+    <link rel="stylesheet" href="/css/nprogress.css">
+    <link rel="stylesheet" href="/css/ar.css">
   </head>
 
   <body>
     <header>Audio Recorder</header>
     <div class="support hidden">
-        <p>Your browser doesn't support audio recording.</p>
-        <i class="fa fa-4x fa-microphone-slash"></i>
+      <p>Your browser doesn't support audio recording.</p>
+      <i class="fa fa-4x fa-microphone-slash"></i>
     </div>
 
     <div class="recorder hidden">
@@ -144,7 +25,6 @@
       </div>
 
       <p class="record-timer"></p>
-
       <div>
         <audio class="record-playback record-result hidden" controls></audio>
       </div>
@@ -154,123 +34,15 @@
       <div id="progress-bar"></div>
       <div class="btn insert record-result hidden">Insert</div>
       <div class="btn cancel">Cancel</div>
-          <a class="record-download record-result hidden" href="#">
-            <i class="fa fa-download"></i>
-          </a>
+        <a class="record-download record-result hidden" href="#">
+          <i class="fa fa-download"></i>
+        </a>
     </footer>
 
     <script src="//d1xa36cy0xt122.cloudfront.net/v1/Mixmax.js"></script>
     <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
-    <script src="lib/recorder/recorder.min.js"></script>
-    <script>
-      (function () {
-        if (Recorder.isRecordingSupported()) {
-          $('.recorder').removeClass('hidden');
-        } else {
-          $('.support').removeClass('hidden');
-          return;
-        }
-
-        var state = 'stopped';
-        var audioData;
-        var fileName;
-
-        var timer;
-        var startTime;
-        const recorder = new Recorder({
-          encoderPath: 'lib/recorder/waveWorker.min.js',
-          encoderSampleRate: 44100
-        });
-
-        recorder.addEventListener('dataAvailable', onDataAvailable);
-
-        $('.record-button').click(micClick);
-        $('.btn.insert').click(insertClick);
-        $('.btn.cancel').click(cancelClick);
-
-        return;
-
-        function onDataAvailable(event) {
-          audioData = new Blob([event.detail], { type: 'audio/wav' });
-          fileName = 'Recording - ' + new Date().toISOString() + '.wav';
-          const url = URL.createObjectURL(audioData);
-
-          $('.record-result').removeClass('hidden');
-          $('.insert').removeClass('hidden');
-
-          $('.record-playback').attr('src', url);
-          $('.record-download').attr('href', url);
-          $('.record-download').attr('download', fileName);
-        }
-
-        function insertClick() {
-          if (state === 'uploading') return;
-          state = 'uploading';
-
-          const form = new FormData();
-          form.append('file', audioData);
-
-          NProgress.start();
-          $.ajax({
-            url: 'api/recordings',
-            method: 'POST',
-            data: form,
-            processData: false,
-            contentType: false
-          }).done(function (data) {
-            Mixmax.done({
-              uploadId: data.uploadId
-            });
-          }).always(function () {
-            NProgress.done();
-          });
-        }
-
-        function cancelClick() {
-          Mixmax.cancel();
-        }
-
-        function micClick() {
-          switch (state) {
-            case 'stopped': return record();
-            case 'recording': return stop();
-            default:
-          }
-        }
-
-        function record() {
-          state = 'recording';
-          $('.record-button').addClass('recording');
-          $('.record-result').addClass('hidden');
-
-          startTime = Date.now();
-          timer = setInterval(function () {
-            const FIVE_MINUTES = 300000;
-            const timeDiff = Date.now() - startTime;
-
-            if (timeDiff > FIVE_MINUTES) {
-              stop();
-            }
-
-            const timeString = new Date(timeDiff).toUTCString().slice(-8, -4)
-            $('.record-timer').text(timeString + ' / 5:00');
-          })
-
-          recorder.initStream().then(function () {
-            recorder.start();
-          });
-        }
-
-        function stop() {
-          state = 'stopped';
-          $('.record-button').removeClass('recording');
-
-          recorder.stop();
-          clearInterval(timer);
-        }
-      })();
-
-    </script>
+    <script src="/lib/recorder/recorder.min.js"></script>
+    <script src="/js/ar.js"></script>
   </body>
 </html>

@@ -1,0 +1,113 @@
+body {
+  margin: 0;
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+}
+
+p {
+  margin-bottom: 1.5rem;
+}
+
+header {
+  font-size: 1.5rem;
+  font-weight: 500;
+
+  color: #ffffff;
+  background: #3c7de6;
+  text-align: center;
+  line-height: 3rem;
+  width: 100%;
+  height: 3rem;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+
+  color: #222222;
+  background: #f9f9fa;
+  text-align: center;
+  line-height: 3rem;
+  width: 100%;
+  height: 3rem;
+}
+
+.recorder, .support {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.record-button {
+  padding: 1.5rem 2.25rem;
+  border-radius: 5rem 5rem;
+
+  color: #8f8f8f;
+  background-color: #eeeeee;
+  transition: all 150ms ease-in-out;
+}
+
+.record-button:hover {
+  cursor: pointer;
+  color: #fefefe;
+  background-color: #f15252;
+}
+
+.record-button.recording {
+  color: #fefefe;
+  background-color: #da2a2a;
+}
+
+.record-download > i {
+  float: right;
+  color: #8f8f8f;
+  line-height: 3rem;
+  padding-right: 1.5rem;
+  transition: all 150ms ease-in-out;
+}
+
+.record-download > i:hover {
+  color: #4f4f4f;
+}
+
+.btn {
+  float: left;
+  display: inline-block;
+
+  font-size: 0.8125rem;
+  text-align: center;
+  cursor: pointer;
+  padding: 0 1rem;
+  margin: 0.5rem 0;
+  background-color: #fff;
+  line-height: 2rem;
+  height: 2rem;
+
+  position: relative;
+  transition: all 150ms ease-in-out;
+  border: 1px solid #dfdfdf;
+  border-radius: 3px;
+}
+
+.btn.insert {
+  margin-left: 0.5rem;
+  color: #ffffff;
+  background-color: #3c7de6;
+}
+.btn.insert:hover {
+  background-color: #2569d6;
+}
+
+.btn.cancel {
+  margin-left: 0.5rem;
+}
+
+.btn.cancel:hover {
+  background-color: #efefef;
+}
+
+.hidden {
+  display: none;
+  transition: all 150ms ease-in-out;
+}
