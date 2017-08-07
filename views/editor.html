@@ -5,19 +5,140 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>Recorder</title>
 
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto">
     <link rel="stylesheet" href="/styles.css">
+
+    <style>
+    body {
+      font-size: 16px;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    p {
+      margin-bottom: 1.5rem;
+    }
+
+    header {
+      color: #ffffff;
+      background: #3c7de6;
+      text-align: center;
+      font-size: 1.5rem;
+      line-height: 3rem;
+      height: 3rem;
+    }
+
+    .record-button {
+      padding: 1.5rem 2.25rem;
+      border-radius: 5rem 5rem;
+
+      color: #afafaf;
+      background-color: #eeeeee;
+    }
+
+    .record-button:hover {
+      cursor: pointer;
+      color: #ffffff;
+      background-color: #f15252;
+    }
+
+    .record-button.recording {
+      color: #ffffff;
+      background-color: #da2a2a;
+    }
+
+    .support, .recorder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+    </style>
+
   </head>
 
   <body>
-    <div id="support"></div>
+    <header class="">Audio Recorder</header>
+    <div class="support hidden">
+        <p>Your browser doesn't support audio recording</p>
+        <i class="fa fa-4x fa-microphone-slash"></i>
+    </div>
 
-    <script src="https://d1xa36cy0xt122.cloudfront.net/v1/Mixmax.js"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <div class="recorder hidden">
+      <p>Click on the button below to start recording.</p>
+      <div class="record-button">
+        <i class="fa fa-4x fa-microphone"></i>
+      </div>
+
+      <div class="record-result hidden">
+        <audio class="record-playback" controls></audio>
+        <a class="record-download" href="#">Download</a>
+      </div>
+    </div>
+
+    <script src="//d1xa36cy0xt122.cloudfront.net/v1/Mixmax.js"></script>
+    <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="lib/recorder/recorder.min.js"></script>
     <script>
-      if (!Recorder.isRecordingSupported()) {
-        $('#support').text('Your browser doesn\'t support audio recording.')
-      }
+      (function () {
+        if (Recorder.isRecordingSupported()) {
+          $('.recorder').removeClass('hidden');
+        } else {
+          $('.support').removeClass('hidden');
+          return;
+        }
+
+        var state = 'stopped';
+        const recorder = new Recorder({
+          encoderPath: 'lib/recorder/waveWorker.min.js'
+        });
+
+        recorder.addEventListener('dataAvailable', onDataAvailable);
+        $('.record-button').click(buttonPress);
+
+        return;
+
+        function onDataAvailable(event) {
+          const dataBlob = new Blob([event.detail], { type: 'audio/wav' });
+          const fileName = 'Recording - ' + new Date().toISOString() + '.wav';
+          const url = URL.createObjectURL(dataBlob);
+
+          $('.record-result').removeClass('hidden');
+
+          $('.record-playback').attr('src', url);
+          $('.record-download').attr('href', url);
+          $('.record-download').attr('download', fileName);
+        }
+
+        function buttonPress() {
+          switch (state) {
+            case 'stopped': return record();
+            case 'recording': return stop();
+            default:
+          }
+        }
+
+        function record() {
+          state = 'recording';
+          $('.record-button').addClass('recording');
+          $('.record-result').addClass('hidden');
+
+          recorder.initStream().then(function () {
+            recorder.start();
+          });
+        }
+
+        function stop() {
+          state = 'stopped';
+          $('.record-button').removeClass('recording');
+
+          recorder.stop();
+        }
+      })();
 
     </script>
   </body>
