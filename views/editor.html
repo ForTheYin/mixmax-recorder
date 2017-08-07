@@ -11,6 +11,7 @@
 
     <style>
     body {
+      margin: 0;
       font-size: 16px;
       font-family: 'Roboto', sans-serif;
     }
@@ -24,6 +25,7 @@
       background: #3c7de6;
       text-align: center;
       font-size: 1.5rem;
+      font-weight: 500;
       line-height: 3rem;
       height: 3rem;
     }
@@ -47,7 +49,7 @@
       background-color: #da2a2a;
     }
 
-    .support, .recorder {
+    .recorder, .support {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -69,10 +71,12 @@
     </div>
 
     <div class="recorder hidden">
-      <p>Click on the button below to start recording.</p>
+      <p>Click on the microphone to start recording.</p>
       <div class="record-button">
         <i class="fa fa-4x fa-microphone"></i>
       </div>
+
+      <p class="record-timer"></p>
 
       <div class="record-result hidden">
         <audio class="record-playback" controls></audio>
@@ -93,6 +97,8 @@
         }
 
         var state = 'stopped';
+        var timer;
+        var startTime;
         const recorder = new Recorder({
           encoderPath: 'lib/recorder/waveWorker.min.js'
         });
@@ -127,6 +133,19 @@
           $('.record-button').addClass('recording');
           $('.record-result').addClass('hidden');
 
+          startTime = Date.now();
+          timer = setInterval(function () {
+            const FIVE_MINUTES = 300000;
+            const timeDiff = Date.now() - startTime;
+
+            if (timeDiff > FIVE_MINUTES) {
+              stop();
+            }
+
+            const timeString = new Date(timeDiff).toUTCString().slice(-8, -4)
+            $('.record-timer').text(timeString + ' / 5:00');
+          })
+
           recorder.initStream().then(function () {
             recorder.start();
           });
@@ -137,6 +156,7 @@
           $('.record-button').removeClass('recording');
 
           recorder.stop();
+          clearInterval(timer);
         }
       })();
 
