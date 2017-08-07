@@ -1,14 +1,14 @@
 module.exports = function(req, res) {
   var data = JSON.parse(req.body.params);
   if (!data) {
-    res.status(400 /* Bad params */ ).send('Invalid params');
+    res.status(400).send('Invalid params');
     return;
   }
 
-  var width = data.width > 600 ? 600 : data.width;
-  var html = '<img style="max-width:100%;" src="' + data.src + '" width="' + width + '"/>';
+  var host = 'https://localhost:8910/api/recordings/'
+  var html = '<a href="' + host + data.uploadId + '">Recording</a>';
   res.json({
-    body: html
-    // Add raw:true if you're returning content that you want the user to be able to edit
+    body: html,
+    raw: false
   });
 };

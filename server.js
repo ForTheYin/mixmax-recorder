@@ -22,6 +22,8 @@ app.get('/editor', function(req, res) {
   res.sendFile(__dirname + '/views/editor.html');
 });
 
+app.use('/api/recordings', require('./api/recordings'));
+
 // The in-email representation.
 app.post('/api/resolver', cors(corsOptions), require('./api/resolver'));
 
