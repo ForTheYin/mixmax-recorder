@@ -13,12 +13,13 @@ Based on the original [Giphy Mixmax Enhancement](https://github.com/mixmaxhq/gip
 
 To test the editor locally, go to <https://localhost:8910/editor> in your browser.
 
-## Browser Support
-- Chrome v34 +
-- Firefox v25 +
-- Microsoft Edge v12 +
-- Opera v21 +
-- Safari v11 +
+## Minimum Browser Support
+
+- Chrome v34
+- Firefox v25
+- Microsoft Edge v12
+- Opera v21
+- Safari v11
 
 ## Enhancement Config Options for Testing
 

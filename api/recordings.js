@@ -15,6 +15,7 @@ router.post('/', upload.single('file'), (req, res, next) => {
 
   // Inserts the file with tag using the current persistence strategy
   persistence.insert(uploadId, file, () => {
+    console.log('Successfully uploaded recording:', uploadId, '(' + new Date() + ')');
     res.json({ uploadId });
   });
 });
