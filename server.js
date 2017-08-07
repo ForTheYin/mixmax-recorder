@@ -19,7 +19,7 @@ var corsOptions = {
 
 // The editor interface.
 app.get('/editor', function(req, res) {
-  res.sendFile(__dirname + '/views/editor.html');
+  res.sendFile(__dirname + '/templates/editor.html');
 });
 
 app.use('/api/recordings', require('./api/recordings'));

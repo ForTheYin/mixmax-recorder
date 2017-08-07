@@ -23,7 +23,6 @@ router.get('/:uploadId', (req, res, next) => {
 
   persistence.find(uploadId, (result) => {
     if (result && result.length > 0) {
-      console.log(result);
       const data = result[0].file;
       res.writeHead(200, {
         'Content-Type': data.mimetype,
